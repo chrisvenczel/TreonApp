@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/f30b69e5-6e2f-4b0c-9384-922f55fcbf5b/microsoft.web/sites/subscriptions/f30b69e5-6e2f-4b0c-9384-922f55fcbf5b/resourceGroups/TreonGatewayTest_group/providers/Microsoft.Web/sites/TreonGatewayTest",
+  "appService.deploySubpath": "."
+}
