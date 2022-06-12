@@ -1,9 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const { spawn } = require('child_process');
+const { PythonShell } = require('python-shell');
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8888;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,6 +18,56 @@ app.use('/static/media', express.static(__dirname + "/client/build/static/media"
 // The home page
 app.get('/', (req, res) => {
   res.sendFile(process.cwd() + "/client/build/index.html");
+});
+
+// Run a python script
+app.get('/python', (req, res) => {
+  /*let dataToSend;
+
+  // Spawn new child process to call the python script
+  const args = ['Christopher', 'Venczel'];
+  const python = spawn('python', [__dirname+'/helloworld.py', ...args]);
+
+  // Collect data from script
+  python.stdout.on('data', (data) => {
+    console.log('Pipe data from python script ...');
+    dataToSend = data.toString();
+  });
+
+  // In the close event we are sure that stream 
+  // from the child process is closed
+  python.on('close', (code) => {
+    console.log(`Child process close all stdio with code ${code}`);
+    // Send data to browser
+    res.send(dataToSend);
+  });*/
+
+  const pythonOptions = {
+    // For Production:
+    //pythonPath: 'C:/home/python364x64/python',
+    //scriptPath: 'D:/home/site/wwwroot',
+
+    // For Development:
+    pythonPath: 'C:/Users/Chris/AppData/Local/Programs/Python/Python37-32/python',
+    scriptPath: __dirname,
+
+    // args:
+    // [
+    //     req.query.term,
+    //     req.params.id,
+    //     req.session.user.searchName,
+    //     req.session.user.searchKey
+    args: ["Christopher", "Venczel"]
+  };
+
+
+  PythonShell.run('helloworld.py', pythonOptions, (err, data) => {
+    if (err) throw err;
+
+    console.log('DATA:', data);
+
+    res.send(data);
+  });
 });
 
 // Get and set treonData

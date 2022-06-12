@@ -14,11 +14,17 @@ interface DataPackage {
 const App = () => {
 
   const [data, setData] = useState<DataPackage[]>([]);
+  const [pythonData, setPythonData] = useState(null);
 
   useEffect(() => {
     axios.get("/treonData").then((res: any) => {
       const data = res.data.allData;
       setData(data);
+    });
+
+    axios.get("/python").then((res: any) => {
+      const data = res.data;
+      setPythonData(data);
     });
   }, []);
 
@@ -27,8 +33,9 @@ const App = () => {
       <h1>
         Treon Data
       </h1>
-      <a href="/treonData" download>
-        Download Data as JSON
+      {pythonData}
+      <a href="/treonData" download="TreonData.json">
+        Download Data as JSON!
       </a>
       <div>
         {data.map((d: DataPackage, i: number) => {
