@@ -45,10 +45,13 @@ app.get('/python', (req, res) => {
   const pythonOptions = {
     // For Production:
     //pythonPath: 'C:/home/python364x64/python',
-    //scriptPath: 'D:/home/site/wwwroot',
+    //scriptPath: 'C:/home/site/wwwroot',
 
-    // For Development:
-    pythonPath: 'C:/Users/Chris/AppData/Local/Programs/Python/Python37-32/python',
+    // Desktop Dev
+    pythonPath: "C:/Users/user/AppData/Local/Programs/Python/Python310/python",
+    // Laptop Dev
+    //pythonPath: 'C:/Users/Chris/AppData/Local/Programs/Python/Python37-32/python',
+
     scriptPath: __dirname,
 
     // args:
@@ -59,7 +62,6 @@ app.get('/python', (req, res) => {
     //     req.session.user.searchKey
     args: ["Christopher", "Venczel"]
   };
-
 
   PythonShell.run('helloworld.py', pythonOptions, (err, data) => {
     if (err) throw err;
