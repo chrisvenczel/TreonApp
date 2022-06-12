@@ -18,7 +18,6 @@ app.get('/', (req, res) => {
   res.sendFile(process.cwd() + "/client/build/index.html");
 });
 
-
 // Get and set treonData
 app.get('/treonData', (req, res) => {
   // Send the current data to the front end
