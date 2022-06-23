@@ -243,11 +243,11 @@ const App = () => {
       </p>
 
       <div className="buttons">
-        <a className="downloadBtn" href="/treonData" download="TreonData.json">
+        <a className="downloadBtn" href="/treonData" download="TREON_Node_RawData.json">
           <i className="fa-solid fa-file-code"></i>
           Download Raw JSON Data
-        </a>
-        <a className="downloadBtn" href="/treonData" download="TreonData.json">
+        </a> 
+        <a className="downloadBtn" href="/csvData" download="TREON_Node_DataLog.csv">
           <i className="fa-solid fa-file-csv"></i>
           Download Data Log as CSV
         </a>

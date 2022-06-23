@@ -77,8 +77,9 @@ i {
 
 .description {
   width: 500px;
-  display: inline-block;
-  margin-top: 0px;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 1em;
 }
 
 .buttons {

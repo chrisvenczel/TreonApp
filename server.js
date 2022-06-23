@@ -70,6 +70,19 @@ app.get('/python', (req, res) => {
   });
 });
 
+app.get('/favicon.ico', (req, res) => {
+  res.send(fs.readFileSync(__dirname + '/favicon.ico'));
+});
+
+// Get the cleaned CSV data
+app.get('/csvData', (req, res) => {
+  // Send the current data to the front end
+  const currentData = JSON.parse(fs.readFileSync(__dirname + '/data.json', 'utf8'));
+  console.log("\n\n\nHERE");
+  console.log(currentData);
+  //res.send(currentData);
+});
+
 // Get and set treonData
 app.get('/treonData', (req, res) => {
   // Send the current data to the front end
