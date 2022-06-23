@@ -78,9 +78,53 @@ app.get('/favicon.ico', (req, res) => {
 app.get('/csvData', (req, res) => {
   // Send the current data to the front end
   const currentData = JSON.parse(fs.readFileSync(__dirname + '/data.json', 'utf8'));
-  console.log("\n\n\nHERE");
-  console.log(currentData);
-  //res.send(currentData);
+
+  // Create the CSV
+  let csv = `Timestamp, Type, Values\n`;
+  for (let i = 0; i < currentData.allData.length; i++) {
+    const timestamp = `"${currentData.allData[i].timestamp}"`;
+    const data = currentData.allData[i].data;
+    const type = data.Type === 'burst' ? "Burst" : "Scalar";
+    let values = "";
+    if (type === "Burst") {
+      if (data?.Values) {
+        let Coord = "X";
+        if (data.ValueMapping === 3) Coord = "X";
+        if (data.ValueMapping === 4) Coord = "Y";
+        if (data.ValueMapping === 5) Coord = "Z";
+        values += `Delta Compressed FFT ${Coord}-Axis (${data.Values.length} values),`;
+        for (let j = 0; j < data.Values.length; j++) {
+          values += `${data.Values[j]},`;
+        }
+      }
+    } else {
+      if (data?.Temperature) {
+        values += `Tempurature (°C): ${data.Temperature},`;
+      }
+      if (data?.BatteryVoltage) {
+        values += `BatteryVoltage (mV): ${data.BatteryVoltage},`;
+      }
+      // For data that is displayed in 3 dimensions
+      const dimensions = ["X", "Y", "Z"];
+      for (let j = 0; j < dimensions.length; j++) {
+        const dim = dimensions[j];
+        if (data?.Vibration?.Kurtosis[dim]) {
+          values += `${dim}-Axis Vibration Data *START*,`;
+          values += `Kurtosis: ${data.Vibration.Kurtosis[dim]},`;
+          values += `Velocity Amplitude (mm/s): ${data.Vibration.P2P[dim]},`;
+          values += `Velocity Root Mean Square (mm/s): ${data.Vibration.RMS[dim]},`;
+          values += `Max zero-to-peak amplitude (mm/s): ${data.Vibration.Z2P[dim]},`;
+          values += `${dim}-Axis Vibration Data *END*,`;
+        }
+      }
+    }
+
+    if (values !== "") {
+      csv += `${timestamp}, ${type}, ${values}\n`;
+    }
+  }
+
+  res.attachment('TREON_Node_Data_Log.csv').send(csv);
 });
 
 // Get and set treonData
