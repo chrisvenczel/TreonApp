@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
 
@@ -223,44 +223,9 @@ const App = () => {
         dOut = { ...dOut, timestamp: d.timestamp };
         return dOut;
       }
-    }).filter(d => d !== null);
-    console.log(newCleanData);
-    const tempurature = scalar.filter(d => d.Temperature !== undefined).map(d => {
-      return { type: CleanDataTypes.Tempurature, timestamp: d.Timestamp, tempurature: d.Temperature }
-    });
-    const batteryVoltage = scalar.filter(d => d.BatteryVoltage !== undefined).map(d => {
-      return { type: CleanDataTypes.BatteryVoltage, timestamp: d.Timestamp, voltage: d.BatteryVoltage }
-    });
-    const vibration = scalar.filter(d => d.Vibration !== undefined);
-    const vibX = vibration.filter(d => d.Vibration.Kurtosis.X !== undefined).map(d => {
-      return { type: CleanDataTypes.VibX, timestamp: d.Timestamp, vibration: d.Vibration }
-    });
-    const vibY = vibration.filter(d => d.Vibration.Kurtosis.Y !== undefined).map(d => {
-      return { type: CleanDataTypes.VibY, timestamp: d.Timestamp, vibration: d.Vibration }
-    });
-    const vibZ = vibration.filter(d => d.Vibration.Kurtosis.Z !== undefined).map(d => {
-      return { type: CleanDataTypes.VibZ, timestamp: d.Timestamp, vibration: d.Vibration }
-    });
+    }).filter(d => d !== null).reverse();
 
-
-    const burst = rawData.filter(d => d.data.Type === Type.Burst);
-
-    // Ordered Latest First
-    const orderedData = [
-      ...tempurature,
-      ...batteryVoltage,
-      ...vibX,
-      ...vibY,
-      ...vibZ
-    ].sort((a, b) => {
-      if (a.timestamp === b.timestamp) {
-        return 0;
-      } else if (a.timestamp > b.timestamp) {
-        return -1;
-      } else {
-        return 1;
-      }
-    });
+    //console.log(newCleanData);
 
     setCleanData(newCleanData);
   }, [rawData]);
@@ -268,17 +233,23 @@ const App = () => {
   return (
     <div className="App">
       {pythonData}
-      <h2>Data Log</h2>
+      <p className="title">TREON Node Data Log</p>
       <p className="description">
-        The following is a cleaned up log of the telemetry data sent by the Treon Node.
+        The following is a cleaned up log of the raw telemetry data sent by the TREON Node.
         It is sorted with the most recently recieved data first.
       </p>
+      <p className="description">
+        You can choose to download either the raw JSON data or the data log as a CSV.
+      </p>
+
       <div className="buttons">
         <a className="downloadBtn" href="/treonData" download="TreonData.json">
-          Download Data as JSON
+          <i className="fa-solid fa-file-code"></i>
+          Download Raw JSON Data
         </a>
         <a className="downloadBtn" href="/treonData" download="TreonData.json">
-          Download Data as Excel
+          <i className="fa-solid fa-file-csv"></i>
+          Download Data Log as CSV
         </a>
       </div>
       <div className="dataContainer">
@@ -318,69 +289,38 @@ const App = () => {
               {d.batteryVoltage && (
                 <p><b>Battery Voltage (mV):</b> {d.batteryVoltage}</p>
               )}
-              {d.vibrationX && (
-                <>
-                  <p><b>--- X Vibration Data ---</b></p>
-                  <p><b>Kurtosis:</b> {d.vibrationX.Kurtosis}</p>
-                  <p><b>Velocity Amplitude (mm/s):</b> {d.vibrationX.P2P}</p>
-                  <p><b>Velocity Root Mean Square (mm/s):</b> {d.vibrationX.RMS}</p>
-                  <p><b>Max zero-to-peak amplitude (mm/s):</b> {d.vibrationX.Z2P}</p>
-                </>
-              )}
-              {d.vibrationY && (
-                <>
-                  <p><b>--- Y Vibration Data ---</b></p>
-                  <p><b>Kurtosis:</b> {d.vibrationY.Kurtosis}</p>
-                  <p><b>Velocity Amplitude (mm/s):</b> {d.vibrationY.P2P}</p>
-                  <p><b>Velocity Root Mean Square (mm/s):</b> {d.vibrationY.RMS}</p>
-                  <p><b>Max zero-to-peak amplitude (mm/s):</b> {d.vibrationY.Z2P}</p>
-                </>
-              )}
-              {d.vibrationZ && (
-                <>
-                  <p><b>--- Z Vibration Data ---</b></p>
-                  <p><b>Kurtosis:</b> {d.vibrationZ.Kurtosis}</p>
-                  <p><b>Velocity Amplitude (mm/s):</b> {d.vibrationZ.P2P}</p>
-                  <p><b>Velocity Root Mean Square (mm/s):</b> {d.vibrationZ.RMS}</p>
-                  <p><b>Max zero-to-peak amplitude (mm/s):</b> {d.vibrationZ.Z2P}</p>
-                </>
-              )}
-              {d.compressedFFTValuesX && (
-                <>
-                  <p><b>--- Delta Compressed FFT X-Axis Values ---</b></p>
-                  <div className="values">
-                    {d.compressedFFTValuesX.map((d, i) => {
-                      return (
-                        <span key={i}>{d}, </span>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-              {d.compressedFFTValuesY && (
-                <>
-                  <p><b>--- Delta Compressed FFT Y-Axis Values ---</b></p>
-                  <div className="values">
-                    {d.compressedFFTValuesY.map((d, i) => {
-                      return (
-                        <span key={i}>{d}, </span>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-              {d.compressedFFTValuesZ && (
-                <>
-                  <p><b>--- Delta Compressed FFT Z-Axis Values ---</b></p>
-                  <div className="values">
-                    {d.compressedFFTValuesZ.map((d, i) => {
-                      return (
-                        <span key={i}>{d}, </span>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
+
+              {/* Render all parts broken into X, Y, Z coordinates */}
+              {["X", "Y", "Z"].map((Coord, i) => {
+                const data = (d as any);
+                return (
+                  <React.Fragment key={i}>
+                    {data[`vibration${Coord}`] && (
+                      <>
+                        <p><b>{`--- ${Coord}-Axis Vibration Data ---`}</b></p>
+                        <p><b>Kurtosis:</b> {data[`vibration${Coord}`].Kurtosis}</p>
+                        <p><b>Velocity Amplitude (mm/s):</b> {data[`vibration${Coord}`].P2P}</p>
+                        <p><b>Velocity Root Mean Square (mm/s):</b> {data[`vibration${Coord}`].RMS}</p>
+                        <p><b>Max zero-to-peak amplitude (mm/s):</b> {data[`vibration${Coord}`].Z2P}</p>
+                      </>
+                    )}
+                    {data[`compressedFFTValues${Coord}`] && (
+                      <>
+                        <p><b>{`--- Delta Compressed FFT ${Coord}-Axis Values ---`}</b></p>
+                        <div className="values">
+                          {data[`compressedFFTValues${Coord}`].map((val: number, i: number) => {
+                            return (
+                              <span key={i}>
+                                {`${val}${i !== (data[`compressedFFTValues${Coord}`].length - 1) ? ", " : ""}`}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </div>
           );
         })}
