@@ -66,8 +66,6 @@ app.get('/python', (req, res) => {
   PythonShell.run('helloworld.py', pythonOptions, (err, data) => {
     if (err) throw err;
 
-    console.log('DATA:', data);
-
     res.send(data);
   });
 });

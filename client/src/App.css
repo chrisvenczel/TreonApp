@@ -1,3 +1,67 @@
 .App {
   text-align: center;
 }
+
+.dataContainer {
+  border: 1px solid black;
+  height: auto;
+  overflow: auto;
+  margin: 0 auto;
+  margin-top: 1em;
+  margin-bottom: 2em;
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.downloadBtn {
+  background-color: rgb(211, 211, 211);
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 0.5em;
+  text-decoration: none;
+  color: black;
+  margin: 10px;
+  display: inline-block;
+}
+
+.downloadBtn:hover {
+  background-color: rgb(180, 180, 180);
+}
+
+.singleDataBox {
+  height: auto;
+  border-bottom: 1px solid black;
+  padding: 1em 1.5em;
+  text-align: left;
+}
+.singleDataBox p {
+  margin: 0.35em 0em;
+}
+
+.singleDataBox .timestamp {
+  border-bottom: 1px dashed grey;
+  padding-bottom: 0.5em;
+}
+
+.singleDataBox h1 {
+  font-size: 1.25em;
+  margin: 0;
+}
+
+.dataContainer:last-child {
+  border-bottom: none;
+}
+
+.description {
+  width: 500px;
+  display: inline-block;
+  margin-top: 0px;
+}
+
+.buttons {
+  display: block;
+}
+
+.values {
+  width: 300px;
+}
